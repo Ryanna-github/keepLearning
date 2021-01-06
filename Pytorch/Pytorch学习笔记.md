@@ -90,7 +90,7 @@ y.add_(x)
   - `torch.tensor(numpy_array)`：分配新内存
 
 - Numpy 转为 Tensor
-  - `torch.rom_numpy(numpy_array)`：共享内存
+  - `torch.from_numpy(numpy_array)`：共享内存
 
 ### 所在设备转化
 
@@ -171,4 +171,10 @@ x.grad
 ```
 
 
+
+## 其他注意
+
+神经网络中只有设计到计算才可以算作一层，比如线性回归是单层神经网络，因为输入层没有涉及任何计算
+
+---
 
