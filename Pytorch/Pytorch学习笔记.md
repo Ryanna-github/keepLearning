@@ -178,3 +178,124 @@ x.grad
 
 ---
 
+
+
+# 建模工具
+
+## 数据集
+
+开始前需要准备好 data 和 labels，两个 Tensor 的行数应当相同，设定好 batch_size 后可以直接调用 `torch.utils.data` 模块以简化操作
+
+```{python}
+import torch.utils.data as Data
+
+batch_size = 10
+dataset = Data.TensorDataset(features, labels)
+data_iter = Data.DataLoader(dataset, batch_size, shuffle = True)
+```
+
+- 其中`dataset.tensors[0]` = features，`dataset.tensors[1]` = labels
+
+- `data_iter` 是一个生成器，已处理最后一个 batch 取不满 batch_size 的情况
+
+```{python}
+for X, y in data_iter:
+    print(X, y)
+```
+
+- `X` 为一个 batch 的 data，`y` 即为其对应 label
+
+
+
+## 模型
+
+利用模块 `torch.nn`，可以很方便自定义网络或者对已有网络结构进行改动，以线性回归为例，具体使用方法如下
+
+```{python}
+import torch.nn as nn
+
+## Method 1
+net = nn.Sequential(nn.Linear(num_inputs, 1))
+
+## Method 2 (with customized layer name)
+net = nn.Sequential()
+net.add_module('linear', nn.Linear(num_inputs, 1))
+
+## Method 3: (with customized layer name)
+from collections import OrderedDict
+net = nn.Sequential(OrderedDict([
+    ('linear', nn.Linear(num_inputs, 1))
+]))
+```
+
+- 三种方法都具有等价的拓展性
+- 以上可以作为继承 `nn.Module` 类的新类网络网络结构定义
+- 注意：`torch.nn` 仅支持以 batch 为形式的输入，如果需要传入单个样本（比如得到单个样例的输出结果）需要 `input.unsqueeze(0)` 增加维度
+
+
+
+## 参数
+
+以上方式定义的网络，可以调用 `net.parameters()` 查看所有可学习的参数
+
+```{python}
+# 查看:net.parameters()
+for param in net.parameters():
+    print(param)
+
+# 初始化
+from torch.nn import init
+init.normal_(net[0].weight, mean = 0, std = 0.01)
+init.constant_(net[0].bias, val = 0)
+net[0].bias.data.fill_(0) # 与上一行等价
+```
+
+- `net.parameters()` 直接取的是参数内存而不是拷贝，可以直接传入优化器进行优化
+
+## 损失函数
+
+依旧使用 `torch.nn` 模块，例如
+
+```{python}
+loss = nn.MSELoss()
+```
+
+ ## 优化算法
+
+使用模块：`torch.optim`
+
+### 固定学习率
+
+```{python}
+import torch.optim as optim 
+
+# 常用方法
+optimizer = optim.SGD(net.parameters(), lr = 0.03)
+print(optimizer) # print 得到的结果都可以在参数中修改
+
+# 精细调整（不同结构学习率不同）
+optimizer = optim.SGD([
+    {'params': net.subnet1.parameters()},
+    {'params': net.subnet2.parameters(), 'lr': 0.01}
+], lr = 0.03)
+```
+
+### 调整学习率
+
+- 方法一：`optimizer.param_groups` 可以查看每个可学习的参数当前对应的学习率，可以对其修改以实现学习率调整
+
+- 方法二：构建新的优化器
+  - 优化器的构建开销很小，旧的不好不妨直接换新
+  - 但是这样会损失动量等状态信息，损失函数收敛会出现震荡
+
+```{python}
+for param_group in optimizer.param_groups:
+    param_group['lr'] *= 0.1
+```
+
+
+
+## 模型训练
+
+
+
