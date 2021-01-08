@@ -184,6 +184,8 @@ x.grad
 
 ## 数据集
 
+### 使用自定义数据集
+
 开始前需要准备好 data 和 labels，两个 Tensor 的行数应当相同，设定好 batch_size 后可以直接调用 `torch.utils.data` 模块以简化操作
 
 ```{python}
@@ -204,6 +206,8 @@ for X, y in data_iter:
 ```
 
 - `X` 为一个 batch 的 data，`y` 即为其对应 label
+
+### 下载数据集
 
 
 
@@ -260,6 +264,13 @@ net[0].bias.data.fill_(0) # 与上一行等价
 loss = nn.MSELoss()
 ```
 
+- 平方损失函数：`nn.MSELoss()`
+  - 回归任务中常用
+  - 计算公式：$$loss = \sum_{i = 1}^{n}({\hat{y}}^{(i)}-y^{(i)})/2$$
+- 交叉熵损失函数：`nn.`
+  - 多分类任务中常用，只关心预测的正确与否而非得到判断结果的把握有多大
+  - 计算公式：$loss = -\sum_{i = 1}^{n}y_j^{(i)}\log{\hat{y_j}^{(i)}} = -\sum_{i = 1}^{n}\log_{y_j^{(i)}}{\hat{y_j}^{(i)}}$
+
  ## 优化算法
 
 使用模块：`torch.optim`
@@ -296,6 +307,14 @@ for param_group in optimizer.param_groups:
 
 
 ## 模型训练
+
+```{python}
+optimizer.zero_grad()
+loss.backward()
+optimizer.step()
+```
+
+
 
 
 
