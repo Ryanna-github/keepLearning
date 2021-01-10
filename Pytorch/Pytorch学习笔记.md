@@ -172,6 +172,25 @@ x.grad
 
 
 
+## 实用函数
+
+### 聚合
+
+```{python}
+# 方法1
+torch.gather(data_tensor, dim, index_tensor)
+# 方法2
+data_tensor.gather(dim, index_tensor)
+```
+
+- `index_tensor 需要是 `LongTensor` 类
+- `data_tensor` 和 `index_tensor` 型完全相同
+- 理解：`data_tensor` 在指定的维度取 `index_tensor` 对应位置的下标的元素
+
+
+
+
+
 ## 其他注意
 
 神经网络中只有设计到计算才可以算作一层，比如线性回归是单层神经网络，因为输入层没有涉及任何计算
@@ -206,8 +225,17 @@ for X, y in data_iter:
 ```
 
 - `X` 为一个 batch 的 data，`y` 即为其对应 label
+- `DataLoader` 允许多进程加速数据读取，对应参数设置为 `num_workers`
+  - 注意，如果不需要额外的进程来加速数据的读取则取 0
 
 ### 下载数据集
+
+```{python}
+# 直接下载
+mnist_train = torchvision.datasets.FashionMNIST(root = '/data', train = True, download = True, transform = transforms.ToTensor())
+# 加载已经下载到目标目录的数据集
+mnist_train = torchvision.datasets.FashionMNIST(root = './data/', train = True, transform = transforms.ToTensor())
+```
 
 
 
