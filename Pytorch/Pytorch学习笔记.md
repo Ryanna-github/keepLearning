@@ -220,8 +220,11 @@ data_iter = Data.DataLoader(dataset, batch_size, shuffle = True)
 - `data_iter` 是一个生成器，已处理最后一个 batch 取不满 batch_size 的情况
 
 ```{python}
+# 遍历所有 batch
 for X, y in data_iter:
     print(X, y)
+# 取一个 batch（测试时常用）
+X, y = iter(test_iter).next()
 ```
 
 - `X` 为一个 batch 的 data，`y` 即为其对应 label
