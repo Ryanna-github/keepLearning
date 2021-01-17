@@ -27,8 +27,6 @@ x = torch.randn_like(x, dtype = torch.float)
 - 指定维数为 `-1`表示由其他维度推出该维度
 - `reshape()` 并不能保证返回的是拷贝
 
-## 
-
 ```python
 # 获取
 x.size()
@@ -105,6 +103,17 @@ x = x.to(device)
 # 转移时更改数据类型
 x = x.to("cpu", torch.double)
 ```
+
+
+
+## 其他
+
+- 设置默认数据类型
+
+```{python}
+torch.set_default_tensor_type(torch.FloatTensor)
+```
+
 
 
 
@@ -201,7 +210,7 @@ data_tensor.gather(dim, index_tensor)
 
 ---
 
-## 
+
 
 # 其他注意
 
@@ -298,6 +307,9 @@ net[0].bias.data.fill_(0) # 与上一行等价
 ```
 
 - `net.parameters()` 直接取的是参数内存而不是拷贝，可以直接传入优化器进行优化
+- 注意：pytorch 中模块已经将参数初始化，不需要再次手动初始化
+
+
 
 ## 损失函数
 
@@ -353,6 +365,18 @@ for param_group in optimizer.param_groups:
     param_group['lr'] *= 0.1
 ```
 
+### 其他设置
+
+- 权重衰减
+
+```{python}
+optimizer = torch.optim.SGD(params = net.parameters(), lr = 0.05, weight_decay = True)
+```
+
+- 可以对不同参数设置不同的优化器对参数进行不同的调整，比如可以设定权重项进行权重衰减但是偏置项不进行衰减
+
+
+
 
 
 ## 模型训练
@@ -365,5 +389,13 @@ optimizer.step()
 
 
 
+## 参数更新
 
+- 一般操作：$w_{1} \leftarrow\left(1-\frac{\eta \lambda}{|\mathcal{B}|}\right) w_{1}$
 
+- 权重衰减：$L_2$ 范数正则化衰减权重
+
+  $w_{1} \leftarrow\left(1-\frac{\eta \lambda}{|\mathcal{B}|}\right) w_{1}-\frac{\eta}{|\mathcal{B}|} \sum_{i \in \mathcal{B}} x_{1}^{(i)}\left(x_{1}^{(i)} w_{1}+x_{2}^{(i)} w_{2}+b-y^{(i)}\right)$
+  - 其损失函数在原有基础上添加 $\frac{\lambda}{2n}||\omega||^2$，即对复杂模型进行惩罚
+  - $\lambda>0$，值越大权重学习到的权重元素越接近零
+  - 可以通过设置 `optimizer()` 中的 `weight_decay = True` 
