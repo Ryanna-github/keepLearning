@@ -287,6 +287,7 @@ net = nn.Sequential(OrderedDict([
 - 三种方法都具有等价的拓展性
 - 以上可以作为继承 `nn.Module` 类的新类网络网络结构定义
 - 注意：`torch.nn` 仅支持以 batch 为形式的输入，如果需要传入单个样本（比如得到单个样例的输出结果）需要 `input.unsqueeze(0)` 增加维度
+- `OrderedDict` 对象取过 `.items()` 后可以进行遍历
 
 
 
