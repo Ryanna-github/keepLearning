@@ -310,6 +310,14 @@ net[0].bias.data.fill_(0) # 与上一行等价
 - `net.parameters()` 直接取的是参数内存而不是拷贝，可以直接传入优化器进行优化
 - 注意：pytorch 中模块已经将参数初始化，不需要再次手动初始化
 
+```{python}
+# 查看包含名称的参数
+for name, param in net.named_parameters():
+    print(name, param)
+```
+
+- `torch.nn.parameter.Parameter` 实际是 `Tensor` 的子类，不同之处在于会自动添加到模型的参数列表中
+
 
 
 ## 损失函数
