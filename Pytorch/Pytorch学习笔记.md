@@ -114,6 +114,19 @@ x = x.to("cpu", torch.double)
 torch.set_default_tensor_type(torch.FloatTensor)
 ```
 
+- 读写操作
+
+```{python}
+# 存储
+torch.save(x, 'x.pt')
+torch.save([x, y], 'xy.pt')
+torch.save({'x': x, 'y': y})
+# 读取
+x2 = torch.load('x.pt')
+xy_list = torch.load('xy.pt')
+xy = torch.load('xy_dict.pt')
+```
+
 
 
 
