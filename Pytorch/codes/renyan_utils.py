@@ -4,6 +4,7 @@ import torchvision
 import torchvision.transforms as transforms
 import torch
 from torch import nn
+from torch.nn import functional as F
 
 def user_svg_display():
     display.set_matplotlib_formats('svg')
@@ -130,3 +131,10 @@ class FlattenLayer(nn.Module):
     
     def forward(self, x):
         return x.view(x.shape[0], -1)
+    
+    
+class GlobalAvgPool2d(nn.Module):
+    def __init__(self):
+        super(GlobalAvgPool2d, self).__init__()
+    def forward(self, x):
+        return F.avg_pool2d(x, kernel_size = x.size()[2:])
