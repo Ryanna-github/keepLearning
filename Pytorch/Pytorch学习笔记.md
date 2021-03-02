@@ -104,6 +104,15 @@ x = x.to(device)
 x = x.to("cpu", torch.double)
 ```
 
+### 修改变量类型
+
+```{python}
+# 例如逻辑型转数值型，其他同理
+pred = pred.type(torch.int)
+```
+
+注意，只有 `tensor` 有 `device` 属性，不可以直接修改 `Dataloader` 得到对象的设备
+
 
 
 ## 其他
