@@ -430,3 +430,27 @@ optimizer.step()
   - 其损失函数在原有基础上添加 $\frac{\lambda}{2n}||\omega||^2$，即对复杂模型进行惩罚
   - $\lambda>0$，值越大权重学习到的权重元素越接近零
   - 可以通过设置 `optimizer()` 中的 `weight_decay = True` 
+
+
+
+# 函数总结
+
+1. `torch.gather()` & `torch.scatter()`
+
+   ```{python}
+   a = torch.Tensor([[1,2],[3,4]])
+   b = torch.gather(a, 1, torch.LongTensor([[0,0],[1,0]]))
+   ```
+
+   - `torch.gather()` 是一个取数的概念，从旧有向量中取出索引指示的数组成新的向量
+   - 得到的新向量和原有向量同型，但元素组成有可能更单一
+   - `dim = 1` 表示在列的维度上进行操作，每次更新的是行，刷过每一列
+
+   ```{python}
+   a = torch.rand(2, 5)
+   b = torch.zeros(3, 5).scatter_(0, torch.tensor([[0, 1, 2, 0, 0], [2, 0, 0, 1, 2]]), a)
+   ```
+
+   - `torch.scatter_()` 是一个填充的概念，新向量和原向量有一个维度相同即可
+   - `dim = 0` 表示按行填充，一次刷过一列
+
